@@ -172,6 +172,7 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
 from datetime import datetime
+import pandas as pd
 
 # Ustawienia Streamlit
 st.title("Wykres kursu BTC/USD")
@@ -193,48 +194,48 @@ def get_btc_data():
 # Pobranie danych
 btc_data = get_btc_data()
 
-# Tworzenie wykresu
-fig = go.Figure()
+# Inicjalizacja kolumn
+btc_data['Months Since Halving'] = 0
+btc_data['Color'] = '#FF0000'  # Domyślny kolor
 
-# Przygotowanie danych do rysowania wykresu
-x = btc_data.index
-y = btc_data['Close']
-
-# Kolory dla miesięcy (czerwony, pomarańczowy, żółty, zielony, niebieski)
-colors = ['#FF0000', '#FFA500', '#FFFF00', '#008000', '#0000FF']  # RGB w formacie HEX
-
-# Zmienne do zbierania wartości
-x_values = []
-y_values = []
-color_values = []
-
-# Dodanie kolorowych segmentów z resetowaniem kolorów
+# Obliczenia dla każdego przedziału halvingów
 for i in range(len(halving_dates) - 1):
     start_date = halving_dates[i]
     end_date = halving_dates[i + 1]
 
-    # Maskujemy dane do odpowiedniego przedziału
-    mask = (x >= start_date) & (x < end_date)
+    # Filtracja danych w tym przedziale
+    mask = (btc_data.index >= start_date) & (btc_data.index < end_date)
 
-    if mask.any():  # Upewnij się, że są jakieś dane w tym przedziale
-        # Obliczanie liczby miesięcy od ostatniego halvingu
-        months_passed = (x[mask].year - start_date.year) * 12 + (x[mask].month - start_date.month)
+    # Obliczanie liczby miesięcy od ostatniego halvingu
+    months_passed = ((btc_data.index[mask].year - start_date.year) * 12 + 
+                     (btc_data.index[mask].month - start_date.month))
 
-        # Kolory w zależności od upływu miesięcy
-        for j in range(len(months_passed)):
-            # Resetujemy miesiące co 48 miesięcy (4 lata)
-            color_index = months_passed[j] % len(colors)  # Wybór koloru na podstawie miesiąca
-            x_values.append(x[mask][j])
-            y_values.append(y[mask][j])
-            color_values.append(colors[color_index])  # Ustalamy kolor
+    # Ustalanie koloru w zależności od liczby miesięcy
+    for j in range(len(months_passed)):
+        if months_passed[j] < 5:  # 0-4 miesiące
+            btc_data['Color'][mask][j] = '#FF0000'  # Czerwony
+        elif months_passed[j] < 10:  # 5-9 miesięcy
+            btc_data['Color'][mask][j] = '#FFA500'  # Pomarańczowy
+        elif months_passed[j] < 15:  # 10-14 miesięcy
+            btc_data['Color'][mask][j] = '#FFFF00'  # Żółty
+        elif months_passed[j] < 20:  # 15-19 miesięcy
+            btc_data['Color'][mask][j] = '#008000'  # Zielony
+        else:  # 20+ miesięcy
+            btc_data['Color'][mask][j] = '#0000FF'  # Niebieski
 
-# Dodajemy jeden trace do wykresu
+    # Ustawianie liczby miesięcy od halvingu w kolumnie
+    btc_data['Months Since Halving'][mask] = months_passed
+
+# Tworzenie wykresu
+fig = go.Figure()
+
+# Dodajemy jeden trace z danymi kolorów
 fig.add_trace(go.Scatter(
-    x=x_values,
-    y=y_values,
+    x=btc_data.index,
+    y=btc_data['Close'],
     mode='lines',
     line=dict(width=2),
-    marker=dict(color=color_values),
+    marker=dict(color=btc_data['Color']),  # Kolory z kolumny 'Color'
     showlegend=False
 ))
 
