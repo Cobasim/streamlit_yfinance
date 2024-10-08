@@ -175,7 +175,7 @@ from datetime import datetime
 import pandas as pd
 
 # Ustawienia Streamlit
-st.title("Wykres kursu BTC/USD")
+st.title("BTC/USD.GICL.")
 st.write(f"Data i godzina pobrania: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 # Daty halvingów
