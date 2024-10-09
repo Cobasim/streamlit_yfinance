@@ -26,7 +26,7 @@ import urllib.parse
 # -
 
 # Ustawienia Streamlit
-st.title("BTC/USD.GICL4.")
+st.title("BTC/USD.GICL_5.")
 st.write(f"TIME_: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 
@@ -44,7 +44,8 @@ tweet_text = "Zobacz mój najnowszy wykres w aplikacji Streamlit! #dataanalysis"
 tweet_text_encoded = urllib.parse.quote(tweet_text)  # Zakodowanie treści tweeta
 
 # Twój URL aplikacji Streamlit lub inny link
-app_url = "https://twoja-aplikacja-streamlit-link.com"
+app_url = "https://appyfinance-68lz4ypyobzbpstvxtze2h.streamlit.app"
+#streamlit #python 
 app_url_encoded = urllib.parse.quote(app_url)  # Zakodowanie URL-a
 
 # Tworzenie pełnego URL-a do tweetowania
