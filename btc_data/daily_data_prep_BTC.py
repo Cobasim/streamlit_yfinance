@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -61,7 +61,7 @@ def get_all_halvings_dt():
     halvings_dt = [datetime.strptime(str_date, "%d-%m-%Y").date() for str_date in halvings_str]
 
     return halvings_dt
-    
+
 
 
 # # Main DEfs
